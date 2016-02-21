@@ -1,0 +1,145 @@
+/*************************************************************************************
+ * PHP-Einfach.de - PHP Online Editor
+ * Allows the execution of PHP Code directly in the browser of the user.
+ * Feel free to change the code as you like. The code is provided without warranty.
+ * 
+ * Copyright: 2016 - Nils Reimers (info@php-einfach.de)
+ * License: GPL v3 
+ * URL: https://github.com/PHP-Einfach/online-php-editor/ | http://www.php-einfach.de
+ *************************************************************************************/
+
+.editor {
+     border: 0px;
+     margin-top:0px;
+     margin-bottom: 0px;
+     padding:0;
+      
+}
+    
+.code {
+	border: 1px solid #aaa;
+	padding: 0px;	
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.result {
+	display: none;
+	padding: 5px 5px 0px 5px;
+	margin: 0px;
+	background-color: #fff;
+	border-top: 1px solid #aaa;
+}
+
+.resultheader {
+	border-top: 1px solid #aaa;
+	padding: 0;
+	maring: 0;
+	background-color: #eee;
+}
+
+
+.code-navbar-right {
+	float: right;
+	line-height: 35px;
+	padding-right: 5px;
+}
+
+
+.code-nav-status {
+	color: #aaa;	
+	font-size: 0.7em;
+	text-align: right;
+	
+}
+
+
+.resultHTML {
+	width: 100%;
+	border: 0;
+}
+
+
+.resultText > pre {
+	border: 0;
+	background-color: #fff;
+	padding: 0;
+	padding: 5px 10px;
+	font-family: monospace;
+	max-height: 500px;
+	overflow: auto;
+}
+
+
+.hide-before-execution {
+	display: none;
+}
+
+.result-get-parameters {
+	display: none;
+	background-color: #eee;
+	padding: 5px;
+	border-top: 1px solid #aaa;
+	
+}
+
+.result-get-parameters > input {
+	margin: 0 !important;
+	width: 50%;
+}
+
+.result-post-parameters {
+	display: none;
+	background-color: #eee;
+	padding: 5px;
+	border-top: 1px solid #aaa;
+
+}
+
+.code-navbar {
+	overflow: visible;
+	min-height: 35px;
+	padding: 0;
+}
+
+.code-nav {
+	margin: 0;
+	list-style: outside none none;
+}
+
+.code-navbar .code-nav {
+	position: relative;
+	left: 0px;
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;	
+
+}
+
+.code-navbar .code-nav > li {
+	float: left;
+	border-right: 1px solid #aaa;
+}
+
+.code-navbar-right .code-nav > li {
+	float: left;
+	border-left: 1px solid #aaa;
+	border-right: 0px;
+}
+
+.code-nav > li > a {
+	display: block;
+}
+
+.code-navbar .code-nav > li > a {
+	float: none;
+	padding: 0px 15px;
+	line-height: 35px;
+
+}
+
+.code-navbar .code-nav > li > a:hover {
+	background-color: #ccc;
+}
+
