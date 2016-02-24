@@ -140,7 +140,6 @@ jQuery('div[data-ace-editor-id]').each(function() {
 
 
 function submitCode(id) {
-	var url = "http://execute.php-einfach.de/execute.php?"+get
 
 	var readOnly = editors[id].getReadOnly();
 	
@@ -161,13 +160,15 @@ function submitCode(id) {
 	jQuery.support.cors = true;
 	
 	
+	var url = "http://execute.php-einfach.de/execute.php?"+get
+	
 	jQuery.ajax({
 		type: "POST",
 		url: url,
 		data: postValues,
 		crossDomain: true
 	})	
-	.done(function( data ) {
+	.done(function( data, status, xhr ) {
 		jQuery('#code_result_'+id).show();
 		jQuery('#code_'+id).find('.hide-before-execution').show();
 		jQuery('#code_resultHTML_'+id).contents().find('body').html(data);
