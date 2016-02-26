@@ -26,6 +26,10 @@ a {
 </head>
  
 <body>
+<p><h1>PHP-Einfach.de Online PHP Editor</h1>
+
+<a href="http://www.php-einfach.de/interaktiver-editor/" target="_blank">PHP-Einfach.de</a> / <a href="https://github.com/PHP-Einfach/online-php-editor" target="_blank">Github</a> </p>
+
 <p>
 This is an editor that allows the direct exection of PHP code. The code is send to our servers and is executed there. To avoid misusage, some PHP functions are disabled.
 </p>
@@ -39,6 +43,10 @@ The code comes with no warranty. Please not that if you execute the PHP code on 
 We took several steps to make our servers as secure as possible, but again, we cannot provide any warranty. 
 </p>
 
+<h2>Normal Editor</h2>
+<p>This is the defaul editor. Each editor must have the data attribute <em>data-ace-editor-id</em> with a unique id. This id
+muss also appear in the the <em>id</em> attribute for the &lt;div&gt; and the &lt;pre&gt; tags.
+</p>
 <div  class="code" id="code_1" data-ace-editor-id="1"
 	data-ace-editor-allow-execution="true" data-ace-editor-hide-vars="false" 
 	data-ace-editor-script-name="page.php" data-ace-editor-default-get="" data-ace-editor-default-post="">
@@ -47,9 +55,90 @@ echo "Hi and welcome for our Online PHP Editor. The current time is: ".date("H:i
 echo "Press the button below to execute the code";
 ?&gt;</pre></div>
 
+
+<h2>Editor without $_GET / $_POST parameters</h2>
+<p>By setting the <em>data-ace-editor-hide-vars</em> attribue to true, you can hide the control fields for the $_GET and the $_POST variables.</p>
+<div  class="code" id="code_2" data-ace-editor-id="2"
+	data-ace-editor-allow-execution="true" data-ace-editor-hide-vars="true">
+<pre class="editor" id="code_editor_2" >&lt;?php
+echo "Hi and welcome for our Online PHP Editor. The current time is: ".date("H:i:s")." &lt;br /&gt;";
+echo "Press the button below to execute the code";
+?&gt;</pre></div>
+
+
+<h2>Editor with predefined $_GET / $_POST parameters</h2>
+<p>By setting the <em>data-ace-editor-hide-vars</em> attribue to true, you can hide the control fields for the $_GET and the $_POST variables.</p>
+<div  class="code" id="code_3" data-ace-editor-id="3"
+	data-ace-editor-allow-execution="true" data-ace-editor-hide-vars="false"
+	data-ace-editor-script-name="getpost.php" data-ace-editor-default-get="variable1=value1&variable2=value2" data-ace-editor-default-post='"var1":"value1","var2":"value2"'>
+<pre class="editor" id="code_editor_3" >&lt;?php
+echo "Hi and welcome for our Online PHP Editor. The current time is: ".date("H:i:s")." &lt;br /&gt;";
+echo "Press the button below to execute the code";
+?&gt;</pre></div>
+
+
+<h2>Using the editor on your website</h2>
+<p>
+The following dependencies are needed to run this editor on your own site. All dependencies are already included in this download.</p>
+<ul>
+<li><a href="https://jquery.com/">jQuery</a></li>
+<li><a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome</a></li>
+<li><a href="https://github.com/eligrey/FileSaver.js/">FileSaver.js</a></li>
+<li><a href="https://ace.c9.io/#nav=about">Ace Webeditor</a></li>
+</ul>
+
+
+<p>
+Include the following code into your website:
+<pre style="border: 1px solid #ccc; border-radius:3px; background-color:#f3f3f3; padding: 10px;">
+&lt;!-- Include the dependencies --&gt;
+&lt;link rel="stylesheet" id="font-awesome"  href="libs/font-awesome.min.css" type="text/css" /&gt;
+&lt;script type="text/javascript" src="libs/jquery-2.1.4.min.js"&gt;&lt;/script&gt;	
+&lt;script type="text/javascript" src="libs/ace/ace.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="libs/FileSaver.js"&gt;&lt;/script&gt;
+
+&lt;!-- Include the script and css for the online php editor --&gt;	
+&lt;link rel="stylesheet" href="css/php-einfach-online-php-editor.css" type="text/css" /&gt;
+&lt;script type="text/javascript" src="js/php-einfach-online-php-editor.js"&gt;&lt;/script&gt;
+
+
+&lt;!-- Include this code snippet where ever you like to have it in your site --&gt;
+&lt;div  class="code" id="code_1" data-ace-editor-id="1"
+	data-ace-editor-allow-execution="true" data-ace-editor-hide-vars="false" 
+	data-ace-editor-script-name="page.php" data-ace-editor-default-get="" data-ace-editor-default-post="">
+&lt;pre class="editor" id="code_editor_1" &gt; &amp;lt;?php
+echo "Hi and welcome for our Online PHP Editor. The current time is: ".date("H:i:s")." &lt;br /&gt;";
+echo "Press the button below to execute the code";
+?&amp;gt; &lt;/pre&gt;&lt;/div&gt;
+
+&lt;!-- Call this script to transform your HTML code to actual editors --&gt;
+&lt;script&gt;
+jQuery('div[data-ace-editor-id]').each(function() {
+	var url='http://execute.php-einfach.de/compile.php';
+	var language = 'en'; //Choose 'de' for German
+	new OnlinePHPEditor(this, language, url);
+});
+&lt;/script&gt;
+</pre>
+
+In order that the PHP-Code can be execute in this editor, you need a server backend. You can either use our backend at <em>http://execute.php-einfach.de/execute.php</em> (without warranty) or setup your own server backend.
+
+</p>
+
+
+
+
 <script type='text/javascript' src='libs/ace/ace.js'></script>
 <script type='text/javascript' src='libs/FileSaver.js'></script>
 <script type='text/javascript' src='js/php-einfach-online-php-editor.js'></script>
+
+<script>
+jQuery('div[data-ace-editor-id]').each(function() {
+	var url='http://execute.php-einfach.de/execute.php';
+	var language = 'en'; //Choose 'de' for German
+	new OnlinePHPEditor(this, language, url);
+});
+</script>
 
 </body>
 </html>

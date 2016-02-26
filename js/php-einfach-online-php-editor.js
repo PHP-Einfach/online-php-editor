@@ -7,103 +7,45 @@
  * License: GPL v3 
  * URL: https://github.com/PHP-Einfach/online-php-editor/ | http://www.php-einfach.de
  *************************************************************************************/
-function addEditor(id, allowExecution, scriptName, hideVars, defaultGet, defaultPost) {
-	function escapeHtml(string) {
-		  var entityMap = {
-				    "&": "&amp;",
-			    "<": "&lt;",
-			    ">": "&gt;",
-			    '"': '&quot;',
-			    "'": '&#39;',
-			    "/": '&#x2F;'
-			  };
 
-		  return String(string).replace(/[&<>"'\/]/g, function (s) {
-			  return entityMap[s];
-		  });
+
+function OnlinePHPEditor(element, language='en', url='http://execute.php-einfach.de/execute.php') {
+	var lang = {
+			'execute': 'Execute',
+			'execute_code': 'Execute code',
+			'switch views': 'Switch views',
+			'download script': 'Download script',
+			'define GET/POST variables': 'Define GET/POST-Variablen variables',
+			'hide_get': 'Hide GET parameters',
+			'hide_post': 'Hide POST parameters',
+			'value': 'Value...',
+			'help': 'Help',
+			'last_execution': 'Last execution:',
+			'error': "Sadly the PHP script couldn't be executed. One reason could be an too old browser version."
 	}
-
 	
-	allowExecution = typeof allowExecution !== 'undefined' ? allowExecution : false;
-	scriptName = typeof scriptName !== 'undefined' ? scriptName : 'page.php';
-	hideVars = typeof hideVars !== 'undefined' ? hideVars : false;
-	defaultGet = typeof defaultGet !== 'undefined' ? defaultGet : '';
-	defaultPost = typeof defaultPost !== 'undefined' ? defaultPost : '';
-	
-	defaultPostParameter = '';
-	
-	//alert(defaultPost.trim());
-	if(defaultPost.trim() != '') {
-		parsedPost = JSON.parse('{'+defaultPost.trim()+'}');
-		for (var key in parsedPost) {
-			defaultPostParameter += '<input type="text" value="'+escapeHtml(key)+'" onkeyup="addPostValue(\''+id+'\')" /> <input type="text" value="'+escapeHtml(parsedPost[key])+'" onkeyup="addPostValue(\''+id+'\')"/><br />';
-		}
+	var lang_de = {
+			'execute': 'Ausführen',
+			'execute_code': 'Code ausführen',
+			'switch views': 'Anzeige umschalten',
+			'download script': 'Script herunterladen',
+			'define GET/POST variables': 'GET/POST-Variablen definieren',
+			'hide_get': 'GET-Parameter verbergen',
+			'hide_post': 'POST-Parameter verbergen',
+			'value': 'Wert...',
+			'help': 'Hilfe',
+			'last_execution': 'Letzte Ausführung:',
+			'error': 'Leider ist ein Fehler beim Ausführen deines PHP-Scripts aufgetreten. Eine häufige Fehlerquelle sind veraltete Browser.'
 	}
-
 	
-	if(allowExecution) {
-		jQuery("#code_editor_"+id).after(
-			'<div class="resultbox">'+
-				'<div class="resultheader">'+ 
-				'	<div class="code-navbar code-navbar-right">'+	
-				'		<ul class="code-nav">'+
-				'			<li class="hide-before-execution"><a href="#" onclick="switchView(\''+id+'\'); return false;" title="Anzeige umschalten"><i  id="code_code-sym_'+id+'" class="fa fa-file-text-o"></i></a></li>'+ 
-				'			<li><a href="#" onclick="downloadScript(\''+id+'\', \''+scriptName+'\'); return false;" title="Script herunterladen"><i class="fa fa-download"></i></a></li>'+ 
-				'			<li><a href="http://www.php-einfach.de/interaktiver-editor" target="_blank" title="Hilfe"><i class="fa fa-question-circle"></i></a></li>'+		 		
-				'		</ul>'+
-				' 	</div>'+
-				'	<div class="code-navbar">'+
-				'		<ul class="code-nav">'+
-				'			<li><a href="#" id="compileButton" onclick="submitCode(\''+id+'\'); return false;" title="Code ausführen"><i id="code_gear-sym_'+id+'" class="fa fa-cog"></i> Ausführen <span class="hide-before-execution">(F9)</span></a></li>'+
-				((hideVars) ? '' : '<li><a href="#" title="GET/POST-Variablen definieren" onclick="cyclePostGetVars(\''+id+'\'); return false;">$</a></li>')+
-				'		</ul>'+
-				'	</div>'+		 	
-				'</div>'+
-				'<div class="result-get-parameters" id="code_get_parameters_'+id+'"><div style="float: right"><button type="button" class="close" title="GET-Parameter verbergen" onclick="jQuery(\'#code_get_parameters_'+id+'\').slideUp();">×</button></div>GET-Parameter: '+scriptName+'?<input type="text" value="'+defaultGet+'" id="code_get_parameters_input_'+id+'" /></div>'+
-				'<div class="result-post-parameters" id="code_post_parameters_'+id+'"><div style="float: right"><button type="button" class="close" title="POST-Parameter verbergen" onclick="jQuery(\'#code_post_parameters_'+id+'\').slideUp();">×</button></div>'+
-				'	POST-Parameter<br />'+
-					defaultPostParameter+
-				'	<input type="text" placeholder="Name..." onkeyup="addPostValue(\''+id+'\')" /> <input type="text" placeholder="Wert..." onkeyup="addPostValue(\''+id+'\')"/>'+
-				'</div>'+
-				'<div class="result" id="code_result_'+id+'" data-view="html">'+
-				'	<iframe class="resultHTML" id="code_resultHTML_'+id+'"></iframe>'+
-				'	<div class="resultText" id="code_resultText_'+id+'" style="display: none;"></div>'+
-				'	<div class="code-nav-status" id="code_code-nav-status_'+id+'"> </div>'+
-				'</div>'+
-			'</div>');
+	if(language.toLowerCase() == 'de') {
+		for (var attrname in lang_de) { lang[attrname] = lang_de[attrname]; }
 	}
-	var editor = ace.edit("code_editor_"+id);
-
-    editor.setTheme("ace/theme/crimson_editor");
-    editor.session.setMode("ace/mode/php");
-    editor.setOptions({
-        maxLines: Infinity,
-        highlightActiveLine: false,
-        showPrintMargin: false
-    });
-
-    editor.commands.bindKey("F9", function(cm) {
-		submitCode(id);
-	});
-
-    
-    jQuery('#code_'+id).on('keydown', function(e){
-    	if(e.keyCode == 120) { //Fp
-    		 submitCode(id);
-    	     return false;
-    	}
-    });
-
-    editor.session.setOption("useWorker", false);
-
-    if(!allowExecution) {
-    	editor.setReadOnly(true);
-    }
-    return editor;
-}
-var editors = {}
-jQuery('div[data-ace-editor-id]').each(function() {
-	var id = jQuery(this).data('ace-editor-id');
+	
+	this.lang = lang;
+	
+	
+	var id = jQuery(element).data('ace-editor-id');
 	var allowExecution = false;
 	var mode = "ace/mode/php";
 	var scriptName = "page.php";
@@ -111,43 +53,149 @@ jQuery('div[data-ace-editor-id]').each(function() {
 	var defaultGet = "";
 	var defaultPost = "";
 	
-	if (jQuery(this).attr('data-ace-editor-allow-execution')) {
-		allowExecution = jQuery(this).data('ace-editor-allow-execution') === true;
+	if (jQuery(element).attr('data-ace-editor-allow-execution')) {
+		allowExecution = jQuery(element).data('ace-editor-allow-execution') === true;
 	}
 
-	if (jQuery(this).attr('data-ace-editor-mode')) {
-		mode = jQuery(this).data('ace-editor-mode');
+	if (jQuery(element).attr('data-ace-editor-mode')) {
+		mode = jQuery(element).data('ace-editor-mode');
 	}
 	
-	if (jQuery(this).attr('data-ace-editor-hide-vars')) {
-		hideVars = jQuery(this).data('ace-editor-hide-vars');
+	if (jQuery(element).attr('data-ace-editor-hide-vars')) {
+		hideVars = jQuery(element).data('ace-editor-hide-vars');
 	}
 	
-	if (jQuery(this).attr('data-ace-editor-script-name')) {
-		scriptName = jQuery(this).data('ace-editor-script-name');
+	if (jQuery(element).attr('data-ace-editor-script-name')) {
+		scriptName = jQuery(element).data('ace-editor-script-name');
 	}
 	
-	if (jQuery(this).attr('data-ace-editor-default-get')) {
-		defaultGet = jQuery(this).data('ace-editor-default-get');
+	if (jQuery(element).attr('data-ace-editor-default-get')) {
+		defaultGet = jQuery(element).data('ace-editor-default-get');
 	}
 	
-	if (jQuery(this).attr('data-ace-editor-default-post')) {
-		defaultPost = jQuery(this).data('ace-editor-default-post');
+	if (jQuery(element).attr('data-ace-editor-default-post')) {
+		defaultPost = jQuery(element).data('ace-editor-default-post');
 	}
 	
-	editors[id] = addEditor(id, allowExecution, scriptName, hideVars, defaultGet, defaultPost)
-});
+	this.editor = addEditor(id, allowExecution, scriptName, hideVars, defaultGet, defaultPost, url);
+	this.url = url
+	OnlinePHPEditor.editors[id] = this
+	
+	function addEditor(id, allowExecution, scriptName, hideVars, defaultGet, defaultPost) {
+		function escapeHtml(string) {
+			  var entityMap = {
+					    "&": "&amp;",
+				    "<": "&lt;",
+				    ">": "&gt;",
+				    '"': '&quot;',
+				    "'": '&#39;',
+				    "/": '&#x2F;'
+				  };
+	
+			  return String(string).replace(/[&<>"'\/]/g, function (s) {
+				  return entityMap[s];
+			  });
+		}
+	
+		
+		allowExecution = typeof allowExecution !== 'undefined' ? allowExecution : false;
+		scriptName = typeof scriptName !== 'undefined' ? scriptName : 'page.php';
+		hideVars = typeof hideVars !== 'undefined' ? hideVars : false;
+		defaultGet = typeof defaultGet !== 'undefined' ? defaultGet : '';
+		defaultPost = typeof defaultPost !== 'undefined' ? defaultPost : '';
+		
+		defaultPostParameter = '';
+		
+		if(defaultPost.trim() != '') {
+			parsedPost = JSON.parse('{'+defaultPost.trim()+'}');
+			for (var key in parsedPost) {
+				defaultPostParameter += '<input type="text" value="'+escapeHtml(key)+'" onkeyup="addPostValue(\''+id+'\')" /> <input type="text" value="'+escapeHtml(parsedPost[key])+'" onkeyup="addPostValue(\''+id+'\')"/><br />';
+			}
+		}
+	
+		
+		if(allowExecution) {
+			jQuery("#code_editor_"+id).after(
+				'<div class="resultbox">'+
+					'<div class="resultheader">'+ 
+					'	<div class="code-navbar code-navbar-right">'+	
+					'		<ul class="code-nav">'+
+					'			<li class="hide-before-execution"><a href="#" onclick="OnlinePHPEditor.switchView(\''+id+'\'); return false;" title="'+lang['switch views']+'"><i  id="code_code-sym_'+id+'" class="fa fa-file-text-o"></i></a></li>'+ 
+					'			<li><a href="#" onclick="OnlinePHPEditor.downloadScript(\''+id+'\', \''+scriptName+'\'); return false;" title="'+lang['download script']+'"><i class="fa fa-download"></i></a></li>'+ 
+					'			<li><a href="http://www.php-einfach.de/interaktiver-editor" target="_blank" title="'+lang['help']+'"><i class="fa fa-question-circle"></i></a></li>'+		 		
+					'		</ul>'+
+					' 	</div>'+
+					'	<div class="code-navbar">'+
+					'		<ul class="code-nav">'+
+					'			<li><a href="#" id="compileButton" onclick="OnlinePHPEditor.submitCode(\''+id+'\'); return false;" title="'+lang['execute_code']+'"><i id="code_gear-sym_'+id+'" class="fa fa-cog"></i> '+lang['execute']+' <span class="hide-before-execution">(F9)</span></a></li>'+
+					((hideVars) ? '' : '<li><a href="#" title="'+lang['define GET/POST variables']+'" onclick="OnlinePHPEditor.cyclePostGetVars(\''+id+'\'); return false;">$</a></li>')+
+					'		</ul>'+
+					'	</div>'+		 	
+					'</div>'+
+					'<div class="result-get-parameters" id="code_get_parameters_'+id+'"><div style="float: right"><button type="button" class="close" title="'+lang['hide_get']+'" onclick="jQuery(\'#code_get_parameters_'+id+'\').slideUp();">×</button></div>GET-Parameter: '+scriptName+'?<input type="text" value="'+defaultGet+'" id="code_get_parameters_input_'+id+'" /></div>'+
+					'<div class="result-post-parameters" id="code_post_parameters_'+id+'"><div style="float: right"><button type="button" class="close" title="'+lang['hide_post']+'" onclick="jQuery(\'#code_post_parameters_'+id+'\').slideUp();">×</button></div>'+
+					'	POST-Parameter<br />'+
+						defaultPostParameter+
+					'	<input type="text" placeholder="Name..." onkeyup="OnlinePHPEditor.addPostValue(\''+id+'\')" /> <input type="text" placeholder="'+lang['value']+'" onkeyup="OnlinePHPEditor.addPostValue(\''+id+'\')"/>'+
+					'</div>'+
+					'<div class="result" id="code_result_'+id+'" data-view="html">'+
+					'	<iframe class="resultHTML" id="code_resultHTML_'+id+'"></iframe>'+
+					'	<div class="resultText" id="code_resultText_'+id+'" style="display: none;"></div>'+
+					'	<div class="code-nav-status" id="code_code-nav-status_'+id+'"> </div>'+
+					'</div>'+
+				'</div>');
+		}
+		var editor = ace.edit("code_editor_"+id);
+	
+	    editor.setTheme("ace/theme/crimson_editor");
+	    editor.session.setMode("ace/mode/php");
+	    editor.setOptions({
+	        maxLines: Infinity,
+	        highlightActiveLine: false,
+	        showPrintMargin: false
+	    });
+	
+	    editor.commands.bindKey("F9", function(cm) {
+			OnlinePHPEditor.submitCode(id);
+		});
+	
+	    
+	    jQuery('#code_'+id).on('keydown', function(e){
+	    	if(e.keyCode == 120) { //Fp
+	    		 submitCode(id);
+	    	     return false;
+	    	}
+	    });
+	
+	    editor.session.setOption("useWorker", false);
+	
+	    if(!allowExecution) {
+	    	editor.setReadOnly(true);
+	    }
+	    return editor;
+	}
+}
+
+OnlinePHPEditor.editors = {};
+OnlinePHPEditor.get = function(id) {
+	return OnlinePHPEditor.editors[id];
+}
 
 
-function submitCode(id) {
 
-	var readOnly = editors[id].getReadOnly();
+
+
+
+
+OnlinePHPEditor.submitCode = function(id) {
+	var editor = OnlinePHPEditor.get(id)
+	var readOnly = editor.editor.getReadOnly();
 	
 	if(readOnly)
 		return;
 	
 	jQuery("#code_gear-sym_"+id).addClass('fa-spin');
-	var code = editors[id].getValue();
+	var code = editor.editor.getValue();
 	var get = jQuery('#code_get_parameters_input_'+id).val();
 	var postInputs = jQuery('#code_post_parameters_'+id).find("input");
 
@@ -160,7 +208,7 @@ function submitCode(id) {
 	jQuery.support.cors = true;
 	
 	
-	var url = "http://execute.php-einfach.de/execute.php?"+get
+	var url = editor.url+"?"+get
 	
 	jQuery.ajax({
 		type: "POST",
@@ -172,7 +220,7 @@ function submitCode(id) {
 		jQuery('#code_result_'+id).show();
 		jQuery('#code_'+id).find('.hide-before-execution').show();
 		jQuery('#code_resultHTML_'+id).contents().find('body').html(data);
-		jQuery('#code_resultText_'+id).html("<pre>"+htmlEntities(data)+"</pre>");
+		jQuery('#code_resultText_'+id).html("<pre>"+OnlinePHPEditor.htmlEntities(data)+"</pre>");
 		
 
 		//Resize iframe
@@ -191,21 +239,21 @@ function submitCode(id) {
 		var minute = ('0'+date.getMinutes()).slice(-2);
 		var second = ('0'+date.getSeconds()).slice(-2);
 		
-		jQuery("#code_code-nav-status_"+id).text("Letzte Ausführung: "+day+"."+month+"."+year+" "+hour+":"+minute+":"+second);
+		jQuery("#code_code-nav-status_"+id).text(editor.lang['last_execution']+" "+day+"."+month+"."+year+" "+hour+":"+minute+":"+second);
 
 	 }).fail(function(data) {
-	    alert( "Leider ist ein Fehler beim Ausführen deines PHP-Scripts aufgetreten." );
+	    alert(editor.lang['error']);
 	 }).always(function() {
 		 jQuery("#code_gear-sym_"+id).removeClass('fa-spin');	
 	 });
 	
 }	  
-function htmlEntities(str) {
+OnlinePHPEditor.htmlEntities = function(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 
-function switchView(id) {
+OnlinePHPEditor.switchView = function(id) {
 	if(jQuery("#code_result_"+id).data('view') == "html") {
 		jQuery("#code_resultHTML_"+id).hide();
 		jQuery("#code_resultText_"+id).show();
@@ -230,19 +278,19 @@ function switchView(id) {
  * @param id
  * @param scriptName
  */
-function downloadScript(id, scriptName) {
-	var code = editors[id].getValue();
+OnlinePHPEditor.downloadScript = function (id, scriptName) {
+	var code = OnlinePHPEditor.get(id)['editor'].getValue();
 	saveTextAs(code, scriptName);
 }
 
-function addPostValue(id) {
+OnlinePHPEditor.addPostValue = function(id) {
 	var lastValue = jQuery('#code_post_parameters_'+id).children('input:last').val();
 	if(lastValue.trim() != "") {
 		jQuery('#code_post_parameters_'+id).append('<br /><input type="text" placeholder="Name..." onkeyup="addPostValue(\''+id+'\')" /> <input type="text" placeholder="Wert..." onkeyup="addPostValue(\''+id+'\')"/>');
 	}
 }
 
-function cyclePostGetVars(id) {
+OnlinePHPEditor.cyclePostGetVars = function(id) {
 	var getId = "#code_get_parameters_"+id;
 	var postId = "#code_post_parameters_"+id;
 

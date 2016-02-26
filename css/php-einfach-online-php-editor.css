@@ -143,3 +143,28 @@
 	background-color: #ccc;
 }
 
+button.close {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+.close {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    filter: alpha(opacity=20);
+}
+.close:hover,.close:focus {
+	color:#000;
+	text-decoration:none;
+	cursor:pointer;
+	opacity:.4;
+	filter:alpha(opacity=40)
+}
+
