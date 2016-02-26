@@ -114,7 +114,7 @@ echo "Press the button below to execute the code";
 &lt;!-- Call this script to transform your HTML code to actual editors --&gt;
 &lt;script&gt;
 jQuery('div[data-ace-editor-id]').each(function() {
-	var url='http://execute.php-einfach.de/compile.php';
+	var url='http://execute.php-einfach.de/execute.php';
 	var language = 'en'; //Choose 'de' for German
 	new OnlinePHPEditor(this, language, url);
 });
