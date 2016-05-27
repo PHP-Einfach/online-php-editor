@@ -134,7 +134,8 @@ In order that the PHP-Code can be execute in this editor, you need a server back
 
 <script>
 jQuery('div[data-ace-editor-id]').each(function() {
-	var url='http://execute.php-einfach.de/execute.php';
+	var url='http://execute.php-einfach.de/execute.php'; 
+	//var url='proxy.php'; // In case the browser supports cross domain requests, you can use this proxy script to forward the requests over your own server
 	var language = 'en'; //Choose 'de' for German
 	new OnlinePHPEditor(this, language, url);
 });
