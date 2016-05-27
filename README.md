@@ -11,7 +11,7 @@ The editor has the following dependencies:
 * Ace Webeditor
 
 To include the editor in your page, use the following code snippet:
-```
+```html
 <!-- Include the dependencies -->
 <link rel="stylesheet" id="font-awesome"  href="libs/font-awesome.min.css" type="text/css" />
 <script type="text/javascript" src="libs/jquery-2.1.4.min.js"></script>	
