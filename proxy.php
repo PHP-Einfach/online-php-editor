@@ -34,10 +34,10 @@ if ( $send_cookies ) {
 }
   
 curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 //   curl_setopt( $ch, CURLOPT_HEADER, true );
-//   curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
   
-curl_setopt( $ch, CURLOPT_USERAGENT, $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT'] );
+curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT'] );
   
 $contents = curl_exec( $ch );
   
