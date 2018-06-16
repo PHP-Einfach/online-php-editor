@@ -8,7 +8,7 @@
  * 
  * @author Nils Reimers, www.php-einfach.de
  */
-$url = 'http://execute.php-einfach.de/execute.php?'.$_SERVER['QUERY_STRING'];
+$url = 'http://execute.php-einfach.de:9999/execute.php?'.$_SERVER['QUERY_STRING'];
 $send_cookies = false;
 $send_session = false;
 
